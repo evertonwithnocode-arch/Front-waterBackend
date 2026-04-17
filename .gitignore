@@ -1,0 +1,59 @@
+# 🔐 ENV (NUNCA subir)
+
+.env
+.env.*
+*.env
+
+# 🐍 Python
+
+**pycache**/
+*.py[cod]
+*.pyo
+*.pyd
+
+# 📦 Ambiente virtual
+
+venv/
+.env/
+.venv/
+
+# 🧠 ChromaDB (dados locais)
+
+chroma_db/
+
+# 📂 Logs
+
+*.log
+
+# 🗃️ SQLite / DB locais
+
+*.db
+*.sqlite3
+
+# 🧪 Test / coverage
+
+.coverage
+htmlcov/
+.pytest_cache/
+
+# 🧰 IDEs / editores
+
+.vscode/
+.idea/
+*.swp
+
+# 🖥️ Sistema operacional
+
+.DS_Store
+Thumbs.db
+
+# 🚀 Build / dist
+
+build/
+dist/
+*.egg-info/
+
+# 🔑 Arquivos sensíveis adicionais
+
+secrets.json
+credentials.json
