@@ -1,0 +1,22 @@
+fastapi
+uvicorn[standard]
+
+langchain
+langchain-community
+langchain-core
+
+chromadb
+
+openai
+
+requests
+python-dotenv
+
+supabase
+
+tiktoken
+pydantic
+
+# opcional (recomendado para produção)
+
+gunicorn
