@@ -1,7 +1,7 @@
 # app/routes/upload.py
 from fastapi import APIRouter
-from app.models.schemas import DocumentInput
-from app.services.embedding_service import process_document
+from models.schemas import DocumentInput
+from services.embedding_service import process_document
 
 router = APIRouter()
 

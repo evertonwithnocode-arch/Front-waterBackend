@@ -1,5 +1,5 @@
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from app.core.chroma_client import get_chroma
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from core.chroma_client import get_chroma
 
 def process_document(content, metadata):
 

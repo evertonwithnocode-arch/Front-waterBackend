@@ -1,7 +1,7 @@
 # app/routes/query.py
 from fastapi import APIRouter
-from app.models.schemas import QueryInput
-from app.services.rag_service import run_rag
+from models.schemas import QueryInput
+from services.rag_service import run_rag
 
 router = APIRouter()
 

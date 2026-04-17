@@ -1,5 +1,5 @@
-from app.core.chroma_client import get_chroma
-from app.services.supabase_service import get_user_role
+from core.chroma_client import get_chroma
+from services.supabase_service import get_user_role
 
 def get_allowed_collections(workflow):
 

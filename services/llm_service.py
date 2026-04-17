@@ -1,5 +1,5 @@
 import requests
-from app.config import OPENROUTER_API_KEY
+from config import OPENROUTER_API_KEY
 
 def call_llm(prompt):
 

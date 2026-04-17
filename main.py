@@ -1,6 +1,6 @@
 # app/main.py
 from fastapi import FastAPI
-from app.routes import upload, query
+from core.routes import upload, query
 
 app = FastAPI()
 

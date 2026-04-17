@@ -1,6 +1,6 @@
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
-from app.config import CHROMA_PATH
+from config import CHROMA_PATH
 
 def get_chroma(collection_name):
     return Chroma(
