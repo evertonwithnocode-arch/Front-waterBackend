@@ -3,7 +3,7 @@ from app.db.chroma_client import collection
 from app.services.embedding_service import embeddings
 
 router = APIRouter()
-
+print("UPLOAD MODULE CARREGOU")
 @router.post("/upload")
 def upload(data: dict):
     user_id = data["user_id"]
