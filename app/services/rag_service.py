@@ -2,8 +2,9 @@ from app.db.chroma_client import collection
 from app.services.embedding_service import embeddings
 from app.services.auth_service import get_user_role
 
+
 def build_filter(user_id, role):
-    
+
     if role == "admin":
         return {}
 
@@ -18,11 +19,13 @@ def build_filter(user_id, role):
 
     return {}
 
+
 def query_rag(question: str, user_id: str):
     role = get_user_role(user_id)
 
     filter_conditions = build_filter(user_id, role)
 
+    # 🔥 embeddings (OpenRouter via LangChain)
     query_vector = embeddings.embed_query(question)
 
     results = collection.query(
