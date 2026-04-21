@@ -40,6 +40,13 @@ def query_rag(question: str, user_id: str, entity: str = None, folder: str = Non
 
     documents = results.get("documents", [[]])[0]
 
+      # 🔥 COLOCA O LOG AQUI 👇
+    print("\n================ DOCUMENTS RETORNADOS ================")
+    for i, doc in enumerate(documents):
+        print(f"\n--- DOC {i+1} ---")
+        print(doc[:300])  # primeiros 300 chars
+    print("=====================================================\n")
+
     # 🔹 3. monta contexto
     context = "\n\n".join(documents)
 
