@@ -1,3 +1,11 @@
+from fastapi import APIRouter, HTTPException
+from app.services.rag_service import query_rag
+
+router = APIRouter()
+
+print("QUERY MODULE CARREGOU")
+
+
 @router.post("/query")
 def query(data: dict):
     return query_rag(
