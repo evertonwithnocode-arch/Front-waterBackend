@@ -5,7 +5,6 @@ from app.services.embedding_service import embeddings
 
 router = APIRouter()
 
-# 🔥 configuração básica de log
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -30,7 +29,6 @@ def upload(data: dict):
     try:
         logger.info("📥 [UPLOAD] Requisição recebida")
 
-        # 🔹 validação básica
         user_id = data.get("user_id")
         content = data.get("content")
         metadata = data.get("metadata")
@@ -39,11 +37,22 @@ def upload(data: dict):
             logger.error("❌ Payload inválido")
             raise HTTPException(status_code=400, detail="Invalid payload")
 
+        # 🔥 garantir estrutura mínima
+        metadata["user_id"] = user_id
+
+        # 🔹 garantir entity (vertical)
+        if "entity" not in metadata:
+            raise HTTPException(status_code=400, detail="entity is required")
+
+        # 🔹 novo campo: folder (opcional, mas recomendado)
+        # se não vier, define default
+        metadata.setdefault("folder", "default")
+
         logger.info(f"👤 user_id: {user_id}")
         logger.info(f"📄 content size: {len(content)} chars")
         logger.info(f"🧾 metadata recebido: {metadata}")
 
-        # 🔹 limpeza
+        # 🔹 limpeza (evita erro do Chroma)
         metadata = clean_metadata(metadata)
         logger.info(f"🧹 metadata limpo: {metadata}")
 
@@ -52,7 +61,7 @@ def upload(data: dict):
         vector = embeddings.embed_query(content)
         logger.info(f"✅ Embedding gerado (dim={len(vector)})")
 
-        # 🔹 salvar no Chroma
+        # 🔹 salvar
         doc_id = f"{user_id}_{hash(content)}"
         logger.info(f"💾 Salvando no ChromaDB com id: {doc_id}")
 
