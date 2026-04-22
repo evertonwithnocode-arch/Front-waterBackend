@@ -8,7 +8,7 @@ from app.services.auth_service import get_user_role
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
-# 🔥 COLOCA AQUI (TOPO DO ARQUIVO)
+# 🔥 DEBUG OPENROUTER EMBEDDING
 def debug_embedding(question: str):
     response = requests.post(
         "https://openrouter.ai/api/v1/embeddings",
@@ -28,16 +28,21 @@ def debug_embedding(question: str):
     print("=====================================================\n")
 
 
+# 🔥 FILTER SEGURA (NUNCA RETORNA {})
 def build_filter(user_id, role, entity=None, folder=None):
-    if role == "admin":
-        base_filter = {}
-    else:
+    base_filter = None
+
+    # admin NÃO usa filtro por padrão
+    if role != "admin":
         base_filter = {"user_id": user_id}
 
+    # adiciona filtros extras com segurança
     if entity:
+        base_filter = base_filter or {}
         base_filter["entity"] = entity
 
     if folder:
+        base_filter = base_filter or {}
         base_filter["folder"] = folder
 
     return base_filter
@@ -49,26 +54,36 @@ def query_rag(question: str, user_id: str, entity: str = None, folder: str = Non
     filter_conditions = build_filter(user_id, role, entity, folder)
 
     # 🔹 1. embedding
+    print("🔍 GERANDO EMBEDDING...")
     query_vector = embeddings.embed_query(question)
+    print("✅ EMBEDDING OK")
 
-    # 🔹 2. busca no banco
-    results = collection.query(
-        query_embeddings=[query_vector], n_results=5, where=filter_conditions
-    )
+    # 🔹 2. busca no banco (SAFE QUERY)
+    if filter_conditions:
+        results = collection.query(
+            query_embeddings=[query_vector],
+            n_results=5,
+            where=filter_conditions
+        )
+    else:
+        results = collection.query(
+            query_embeddings=[query_vector],
+            n_results=5
+        )
 
     documents = results.get("documents", [[]])[0]
 
-    # 🔥 COLOCA O LOG AQUI 👇
+    # 🔥 LOG DOCUMENTOS
     print("\n================ DOCUMENTS RETORNADOS ================")
     for i, doc in enumerate(documents):
         print(f"\n--- DOC {i+1} ---")
-        print(doc[:300])  # primeiros 300 chars
+        print(doc[:300])
     print("=====================================================\n")
 
-    # 🔹 3. monta contexto
+    # 🔹 3. contexto
     context = "\n\n".join(documents)
 
-    # 🔹 4. chama OpenRouter (LLM)
+    # 🔹 4. LLM (OpenRouter)
     response = requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
         headers={
@@ -76,7 +91,7 @@ def query_rag(question: str, user_id: str, entity: str = None, folder: str = Non
             "Content-Type": "application/json",
         },
         json={
-            "model": "openai/gpt-4o-mini",  # ou outro
+            "model": "openai/gpt-4o-mini",
             "messages": [
                 {
                     "role": "system",
@@ -98,4 +113,7 @@ Question:
 
     answer = response.json()["choices"][0]["message"]["content"]
 
-    return {"answer": answer, "documents": documents}  # opcional (debug ou citations)
+    return {
+        "answer": answer,
+        "documents": documents
+    }
