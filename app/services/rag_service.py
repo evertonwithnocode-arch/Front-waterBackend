@@ -8,6 +8,26 @@ from app.services.auth_service import get_user_role
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
+# 🔥 COLOCA AQUI (TOPO DO ARQUIVO)
+def debug_embedding(question: str):
+    response = requests.post(
+        "https://openrouter.ai/api/v1/embeddings",
+        headers={
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": "openai/text-embedding-3-small",
+            "input": question
+        }
+    )
+
+    print("\n================ RESPOSTA OPENROUTER ================")
+    print("STATUS:", response.status_code)
+    print("BODY:", response.text)
+    print("=====================================================\n")
+
+
 def build_filter(user_id, role, entity=None, folder=None):
     if role == "admin":
         base_filter = {}
@@ -33,14 +53,12 @@ def query_rag(question: str, user_id: str, entity: str = None, folder: str = Non
 
     # 🔹 2. busca no banco
     results = collection.query(
-        query_embeddings=[query_vector],
-        n_results=5,
-        where=filter_conditions
+        query_embeddings=[query_vector], n_results=5, where=filter_conditions
     )
 
     documents = results.get("documents", [[]])[0]
 
-      # 🔥 COLOCA O LOG AQUI 👇
+    # 🔥 COLOCA O LOG AQUI 👇
     print("\n================ DOCUMENTS RETORNADOS ================")
     for i, doc in enumerate(documents):
         print(f"\n--- DOC {i+1} ---")
@@ -62,7 +80,7 @@ def query_rag(question: str, user_id: str, entity: str = None, folder: str = Non
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are an assistant that answers based ONLY on provided context."
+                    "content": "You are an assistant that answers based ONLY on provided context.",
                 },
                 {
                     "role": "user",
@@ -72,15 +90,12 @@ Context:
 
 Question:
 {question}
-"""
-                }
-            ]
-        }
+""",
+                },
+            ],
+        },
     )
 
     answer = response.json()["choices"][0]["message"]["content"]
 
-    return {
-        "answer": answer,
-        "documents": documents  # opcional (debug ou citations)
-    }
+    return {"answer": answer, "documents": documents}  # opcional (debug ou citations)
