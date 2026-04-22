@@ -1,3 +1,5 @@
+import os
+
 from langchain_openai import OpenAIEmbeddings
 from app.core.config import settings
 
