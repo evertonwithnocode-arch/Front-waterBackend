@@ -168,10 +168,7 @@ Question:
         })
 
     # 🔥 filtro
-    sources = [
-        s for s in sources
-        if s["score"] is None or s["score"] < 0.5
-    ]
+    sources = sorted(sources, key=lambda x: x["score"])[:3]
 
     print("\n📤 SOURCES ENVIADAS AO FRONT:")
     print(json.dumps(sources, indent=2))
