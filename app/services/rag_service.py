@@ -114,7 +114,7 @@ Question:
         },
     )
 
-     answer = response.json()["choices"][0]["message"]["content"]
+    answer = response.json()["choices"][0]["message"]["content"]
 
     # 🔥 montar sources (PRIMEIRO)
     sources = []
