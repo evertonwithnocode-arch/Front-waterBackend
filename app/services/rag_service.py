@@ -72,6 +72,9 @@ def query_rag(question: str, user_id: str, entity: str = None, folder: str = Non
         )
 
     documents = results.get("documents", [[]])[0]
+    metadatas = results.get("metadatas", [[]])[0]
+    distances = results.get("distances", [[]])[0]
+
 
     # 🔥 LOG DOCUMENTOS
     print("\n================ DOCUMENTS RETORNADOS ================")
@@ -111,9 +114,26 @@ Question:
         },
     )
 
-    answer = response.json()["choices"][0]["message"]["content"]
+     answer = response.json()["choices"][0]["message"]["content"]
 
+    # 🔥 montar sources (PRIMEIRO)
+    sources = []
+
+    for i in range(len(documents)):
+        sources.append({
+            "content": documents[i],
+            "metadata": metadatas[i] if i < len(metadatas) else {},
+            "score": distances[i] if i < len(distances) else None
+        })
+
+    # 🔥 filtro (DEPOIS)
+    sources = [
+        s for s in sources
+        if s["score"] is None or s["score"] < 0.5
+    ]
+
+    # ✅ return correto (DENTRO da função)
     return {
         "answer": answer,
-        "documents": documents
+        "sources": sources
     }
