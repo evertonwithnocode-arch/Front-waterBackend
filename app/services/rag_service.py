@@ -158,7 +158,11 @@ Question:
             "metadata": metadata,
             "score": score,
             # 👇 já manda pronto pro frontend
-            "document_name": metadata.get("document_name"),
+            "document_name": (
+                metadata.get("title")
+                or metadata.get("file_name")
+                or metadata.get("document_name")
+                 ),
             "entity": metadata.get("entity"),
             "folder": metadata.get("folder")
         })
