@@ -52,6 +52,10 @@ def upload(data: dict):
         logger.info(f"📄 content size: {len(content)} chars")
         logger.info(f"🧾 metadata recebido: {metadata}")
 
+        logger.info(f"📛 document_name: {metadata.get('document_name')}")
+        if "document_name" not in metadata:
+            metadata["document_name"] = f"doc_{abs(hash(content))}"
+
         # 🔹 limpeza (evita erro do Chroma)
         metadata = clean_metadata(metadata)
         logger.info(f"🧹 metadata limpo: {metadata}")
