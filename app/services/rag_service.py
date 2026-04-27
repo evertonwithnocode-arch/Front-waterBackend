@@ -111,7 +111,18 @@ Question:
         },
     )
 
-    answer = response.json()["choices"][0]["message"]["content"]
+    print("\n================ OPENROUTER RESPONSE ================")
+    print("STATUS:", response.status_code)
+    print("BODY:", response.text)
+    print("=====================================================\n")
+
+    data = response.json()
+
+    if "choices" not in data:
+        print("❌ ERRO NA RESPOSTA DO OPENROUTER:", data)
+        raise Exception(f"Erro OpenRouter: {data}")
+
+    answer = data["choices"][0]["message"]["content"]
 
     return {
         "answer": answer,
