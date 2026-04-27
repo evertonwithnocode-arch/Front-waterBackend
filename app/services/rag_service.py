@@ -88,6 +88,15 @@ def query_rag(question: str, user_id: str, entity: str = None, folder: str = Non
 
     documents = results.get("documents", [[]])[0]
     metadatas = results.get("metadatas", [[]])[0]
+    sources = [
+    {
+        "document_name": m.get("document_name"),
+        "file_name": m.get("file_name"),
+        "entity": m.get("entity"),
+        "folder": m.get("folder"),
+    }
+    for m in metadatas
+]
     distances = results.get("distances", [[]])[0]
 
     print(f"\n📊 RESULTADOS BRUTOS:")
@@ -157,6 +166,7 @@ Question:
     answer = data["choices"][0]["message"]["content"]
 
     return {
-        "answer": answer,
-        "sources": sources
+    "answer": answer,
+    "documents": documents,
+    "sources": sources
     }
